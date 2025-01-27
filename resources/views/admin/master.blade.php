@@ -207,7 +207,9 @@
             });
         });
 
-
+        $(document).ready(function() {
+            $('#modalShift').modal('show');
+        });
     </script>
 </body>
 

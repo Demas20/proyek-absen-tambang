@@ -1,6 +1,38 @@
 @extends('admin.master')
 @section('title','Dashboard')
 @section('content')
+<!-- Modal Input Shift -->
+<div class="modal fade" id="shiftModal" tabindex="-1" aria-labelledby="shiftModalLabel" aria-hidden="true"
+     data-backdrop="static" data-keyboard="false" 
+     @if($showModal) style="display:block;" @endif>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shiftModalLabel">Input Shift</h5>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('shift.store') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="shift">Shift</label>
+                        <input type="text" class="form-control" id="shift" name="shift" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hari">Hari</label>
+                        <input type="text" class="form-control" id="hari" name="hari" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggal">Tanggal</label>
+                        <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan Shift</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <!-- Page-header start -->
     <div class="page-header">
         <div class="page-block">
@@ -194,4 +226,10 @@
               <div id="styleSelector"> </div>
           </div>
       </div>
+      <script>
+        // Pastikan modal tampil ketika halaman dimuat
+        $(document).ready(function() {
+            $('#modalShift').modal('show');
+        });
+    </script>
 @endsection

@@ -10,10 +10,9 @@ class ShiftReport extends Model
     use HasFactory;
     protected $table = 'shift_report';
     protected $fillable = [
-        'date',
+        'hari',
         'shift',
-        'total_unit',
-        'operator_id',
+        'tanggal',
     ];
 
     public function unitPopulasi()

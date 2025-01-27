@@ -7,6 +7,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UnitPopulasiController;
 use App\Http\Controllers\UnitDetailController;
+use App\Http\Controllers\ShiftController;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -25,7 +26,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/');
+    // Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/admin', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('karyawan/index', [AdminController::class, 'karyawanindex'])->name('karyawan.index');
     //data Unit
@@ -63,6 +65,8 @@ Route::get('/daily-report/reports', [ReportController::class, 'generateDailyRepo
 // Route untuk mengunduh laporan dalam format Excel atau PDF
 Route::get('/report/export', [ReportController::class, 'exportReport'])->name('report.export');
 
+//shift
+Route::post('/shift/store', [ShiftController::class, 'store'])->name('shift.store');
 
 });
 

@@ -16,6 +16,15 @@ class AdminController extends Controller
         return view('admin.karyawan.index');
     }
     public function dashboard(){
+        if (!session()->has('shift')) {
+            return view('admin.index')->with('showModal', true);
+        }
+    
+        // Ambil data session
+        $shift = session('shift');
+        $hari = session('hari');
+        $tanggal = session('tanggal');
+
         $operator = Operator::count();
         $unitPopulasi = UnitPopulasi::count();
 
@@ -32,6 +41,6 @@ class AdminController extends Controller
         $unitRunning = UnitPopulasi::sum('running');
         $breakdown = UnitPopulasi::sum('breakdown');
         // dd($unitRunning);
-        return view('admin.index',compact('operator','unitPopulasi','breakdown','dfit','sakit','stb','mp_exp','unitRunning'));
+        return view('admin.index',compact('operator','unitPopulasi','breakdown','dfit','sakit','stb','mp_exp','unitRunning'))->with('showModal', false);
     }
 }
