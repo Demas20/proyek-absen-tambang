@@ -3,10 +3,12 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UnitPopulasiController;
 use App\Http\Controllers\UnitDetailController;
 use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\Facade as PDF;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +54,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/absen-operator', [OperatorController::class, 'absen'])->name('operator.absen');
     Route::post('/operator_report/store', [OperatorController::class, 'stores'])->name('operator_report.store');
+    Route::get('/operator/ajax', [OperatorController::class, 'getOperators'])->name('operator.ajax');
+
+    // Route untuk menampilkan laporan berdasarkan filter
+Route::get('/daily-report', [ReportController::class, 'generateDailyReport'])->name('daily.report');
+Route::get('/daily-report/reports', [ReportController::class, 'generateDailyReports'])->name('daily.reports');
+
+// Route untuk mengunduh laporan dalam format Excel atau PDF
+Route::get('/report/export', [ReportController::class, 'exportReport'])->name('report.export');
+
 
 });
 

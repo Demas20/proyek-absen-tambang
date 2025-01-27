@@ -16,13 +16,13 @@
                 </div>
             </div>
             <a href="index.html">
-                <img class="img-fluid" src="assets/images/logo.png" alt="Theme-Logo" />
+                <img class="img-fluid" src="{{asset('assets/images/logo.png')}}" alt="Theme-Logo" />
             </a>
             <a class="mobile-options waves-effect waves-light">
                 <i class="ti-more"></i>
             </a>
         </div>
-      
+
         <div class="navbar-container container-fluid">
             <ul class="nav-left">
                 <li>

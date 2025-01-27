@@ -70,13 +70,13 @@
 
         <div class="pcoded-navigation-label" data-i18n="nav.category.other">Laporan</div>
         <ul class="pcoded-item pcoded-left-item">
-            <li class="pcoded-hasmenu ">
-                <a href="javascript:void(0)" class="waves-effect waves-dark">
+            <li class="pcoded-hasmenu {{ Route::currentRouteName() === 'daily.report' ? 'active' : '' }}">
+                <a href="{{route('daily.report')}}" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-file"></i><b>M</b></span>
                     <span class="pcoded-mtext" data-i18n="nav.menu-levels.main">Laporan</span>
                     <span class="pcoded-mcaret"></span>
                 </a>
-                
+
             </li>
         </ul>
     </div>

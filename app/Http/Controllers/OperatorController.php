@@ -7,6 +7,7 @@ use App\Models\Operator;
 use App\Models\OperatorReport;
 use App\Models\ShiftReport;
 use App\Models\OperatorAttedance as OperatorAttendance;
+use Yajra\DataTables\Facades\DataTables;
 
 class OperatorController extends Controller
 {
@@ -58,74 +59,85 @@ class OperatorController extends Controller
         return view('admin.operator.absensi' ,compact('operator','shiftReport'));
     }
     public function stores(Request $request)
-{
-    $operatorIds = $request->input('operator_ids', []);
-    $statuses = $request->input('status', []);
-    $shiftReportIds = $request->input('shift_report_id', []);
+    {
+        // dd($request->input('operator_ids'));
+        // Validasi input
+        $request->validate([
+            'shift_report_id' => 'required|exists:shift_report,id',
+            'operator_ids' => 'required|array',
+            'status' => 'required|array',
+        ]);
 
-    // Validasi shift_report_id
-    $validShiftReportIds = ShiftReport::pluck('id')->toArray();
-    foreach ($shiftReportIds as $shiftReportId) {
-        if (!in_array($shiftReportId, $validShiftReportIds)) {
-            return redirect()->back()->withErrors('Shift Report ID tidak valid.');
+        // Ambil data dari request
+        $operatorIds = $request->input('operator_ids');
+        $statuses = $request->input('status');
+
+        // Hitung jumlah status operator
+        $totalUnit = count($operatorIds);
+        $dfitCount = 0;
+        $sakitCount = 0;
+        $stbCount = 0;
+
+        foreach ($statuses as $status) {
+            if ($status == 'dfit') {
+                $dfitCount++;
+            } elseif ($status == 'sakit') {
+                $sakitCount++;
+            } elseif ($status == 'stb') {
+                $stbCount++;
+            }
+        }
+
+        $siapMancal = $dfitCount; // Hanya `dfit` yang siap mancal
+
+        // Simpan data ke tabel `operator_report`
+        $operatorReport = OperatorReport::create([
+            'shift_report_id' => $request->shift_report_id,
+            'total_unit' => $totalUnit,
+            'siap_mancal' => $siapMancal,
+            'dfit' => $dfitCount,
+            'sakit' => $sakitCount,
+            'stb' => $stbCount,
+            'mp_exp' => $request->input('mp_exp', 0),
+        ]);
+
+        // Simpan data absensi ke tabel `operator_attendance`
+        foreach ($statuses as $operatorId => $status) {
+            OperatorAttendance::updateOrCreate(
+                ['operator_id' => $operatorId, 'shift_report_id' => $request->shift_report_id],
+                ['status' => $status]
+            );
+        }
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('operator.absen')->with('success', 'Data absensi berhasil disimpan.');
+    }
+
+    public function getOperators(Request $request)
+    {
+        if ($request->ajax()) {
+            // Ambil data operator
+            $data = Operator::all(); // Ganti dengan query yang sesuai kebutuhan
+
+            // Tampilkan data operator dalam bentuk DataTables
+            return DataTables::of($data)
+                ->addColumn('status', function ($row) {
+                    return '
+                        <label>
+                            <input type="radio" name="status[' . $row->id . ']" value="dfit" required> Dfit
+                        </label>
+                        <label>
+                            <input type="radio" name="status[' . $row->id . ']" value="sakit"> Sakit
+                        </label>
+                        <label>
+                            <input type="radio" name="status[' . $row->id . ']" value="stb"> Stb
+                        </label>
+                    ';
+                })
+                ->rawColumns(['status'])
+                ->make(true);
         }
     }
-    // Validasi input
-    if (empty($operatorIds)) {
-        return redirect()->back()->withErrors('Operator tidak ditemukan.');
-    }
-
-    // Loop melalui operator untuk menyimpan data absensi
-    foreach ($operatorIds as $operatorId) {
-        $status = $statuses[$operatorId] ?? null;
-        $shiftReportId = $shiftReportIds[$operatorId] ?? null;
-
-        // Validasi status dan shift_report_id
-        if (!$status || !$shiftReportId) {
-            continue; // Skip jika data tidak lengkap
-        }
-
-        // Simpan data absensi operator ke tabel `operator_attendance`
-        OperatorAttendance::updateOrCreate(
-            [
-                'operator_id' => $operatorId,
-                'shift_report_id' => $shiftReportId,
-            ],
-            [
-                'status' => $status,
-            ]
-        );
-    }
-
-    // Hitung ringkasan untuk tabel `operator_report`
-    $shiftReportGroups = OperatorAttendance::selectRaw('shift_report_id, COUNT(*) as total_unit, 
-            SUM(CASE WHEN status = "dfit" THEN 1 ELSE 0 END) as dfit,
-            SUM(CASE WHEN status = "sakit" THEN 1 ELSE 0 END) as sakit,
-            SUM(CASE WHEN status = "stb" THEN 1 ELSE 0 END) as stb')
-        ->whereIn('shift_report_id', $shiftReportIds)
-        ->groupBy('shift_report_id')
-        ->get();
-
-    // Simpan ringkasan ke tabel `operator_report`
-    foreach ($shiftReportGroups as $group) {
-        OperatorReport::updateOrCreate(
-            [
-                'shift_report_id' => $group->shift_report_id,
-            ],
-            [
-                'total_unit' => $group->total_unit,
-                'dfit' => $group->dfit,
-                'sakit' => $group->sakit,
-                'stb' => $group->stb,
-                'siap_mancal' => $group->dfit, // Misal sama dengan dfit
-                'mp_exp' => 0, // Atur jika ada data tambahan
-            ]
-        );
-    }
-
-    return redirect()->back()->with('success', 'Absensi berhasil disimpan.');
-}
-
 
 
 }

@@ -1,4 +1,5 @@
 @extends('admin.master')
+@section('title','Dashboard')
 @section('content')
     <!-- Page-header start -->
     <div class="page-header">
@@ -7,7 +8,7 @@
                 <div class="col-md-8">
                     <div class="page-header-title">
                         <h5 class="m-b-10">Dashboard</h5>
-                        <p class="m-b-0">Welcome to Mega Able</p>
+                        <p class="m-b-0">Welcome to {{Auth::user()->name}}</p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -36,8 +37,8 @@
                                   <div class="card-block">
                                       <div class="row align-items-center">
                                           <div class="col-8">
-                                              <h4 class="text-c-purple">$30200</h4>
-                                              <h6 class="text-muted m-b-0">Jumlah User</h6>
+                                              <h4 class="text-c-purple">{{$operator}}</h4>
+                                              <h6 class="text-muted m-b-0">Jumlah Operator</h6>
                                           </div>
                                           <div class="col-4 text-right">
                                               <i class="fa fa-user f-28"></i>
@@ -47,10 +48,10 @@
                                   <div class="card-footer bg-c-purple">
                                       <div class="row align-items-center">
                                           <div class="col-9">
-                                              <p class="text-white m-b-0">% change</p>
+                                              <p class="text-white m-b-0">Lihat Selengkapnya</p>
                                           </div>
                                           <div class="col-3 text-right">
-                                              <i class="fa fa-line-chart text-white f-16"></i>
+                                              <i class="fa fa-right-arrows text-white f-16"></i>
                                           </div>
                                       </div>
 
@@ -62,7 +63,7 @@
                                   <div class="card-block">
                                       <div class="row align-items-center">
                                           <div class="col-8">
-                                              <h4 class="text-c-green">290+</h4>
+                                              <h4 class="text-c-green">{{$unitPopulasi}}</h4>
                                               <h6 class="text-muted m-b-0">Jumlah Unit</h6>
                                           </div>
                                           <div class="col-4 text-right">
@@ -73,7 +74,7 @@
                                   <div class="card-footer bg-c-green">
                                       <div class="row align-items-center">
                                           <div class="col-9">
-                                              <p class="text-white m-b-0">% change</p>
+                                              <p class="text-white m-b-0">Lihat Detail</p>
                                           </div>
                                           <div class="col-3 text-right">
                                               <i class="fa fa-line-chart text-white f-16"></i>
@@ -133,65 +134,60 @@
                               </div>
                         </div>
                           <!-- task, page, download counter  end -->
-                        
+
                         <div class="col-xl-6 col-md-8">
                             <div class="card">
                                 <div class="card-header" style="background-color: #58E6Fb">
-                                    Absensi Team Unit Hari ini
-                                    <small class="d-block">7 August 2023</small>
+                                    Absensi Team Operator Hari ini
+                                    <small class="d-block">{{ now()->format('d F Y') }}</small>
                                 </div>
                                 <div class="card-body">
                                     <div class="row status-row">
                                         <div class="col text-green">
-                                            <div>61</div>
-                                            <div class="status-label">Hadir</div>
+                                            <div>{{ $dfit }}</div>
+                                            <div class="status-label">Dfit</div>
                                         </div>
                                         <div class="col text-orange">
-                                            <div>50</div>
+                                            <div>{{ $sakit }}</div>
                                             <div class="status-label">Sakit</div>
                                         </div>
                                         <div class="col text-blue">
-                                            <div>84</div>
-                                            <div class="status-label">Izin</div>
+                                            <div>{{ $stb }}</div>
+                                            <div class="status-label">Stb</div>
                                         </div>
                                         <div class="col text-red">
-                                            <div>779</div>
+                                            <div>{{ $mp_exp }}</div>
                                             <div class="status-label">Alfa</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                          </div>
-                          <div class="col-xl-6 col-md-8">
+                        </div>
+
+                        <div class="col-xl-6 col-md-8">
                             <div class="card">
-                                <div class="card-header" style="background-color: #FA1D1D; color: wheat">
-                                    Absensi Karyawan Hari Ini
-                                    <small class="d-block">7 August 2023</small>
+                                <div class="card-header" style="background-color: #58E6Fb">
+                                    Unit Running Hari Ini
+                                    <small class="d-block">{{ now()->format('d F Y') }}</small>
                                 </div>
                                 <div class="card-body">
                                     <div class="row status-row">
                                         <div class="col text-green">
-                                            <div>61</div>
-                                            <div class="status-label">Hadir</div>
+                                            <div>{{ $unitRunning }}</div>
+                                            <div class="status-label">Berjalan</div>
                                         </div>
-                                        <div class="col text-orange">
-                                            <div>50</div>
-                                            <div class="status-label">Sakit</div>
-                                        </div>
-                                        <div class="col text-blue">
-                                            <div>84</div>
-                                            <div class="status-label">Izin</div>
-                                        </div>
-                                        <div class="col text-red">
-                                            <div>779</div>
-                                            <div class="status-label">Alfa</div>
+                                        <div class="col text-green">
+                                            <div>{{ $breakdown }}</div>
+                                            <div class="status-label">Breakdown</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                          </div>
-                      </div>
-                      
+                        </div>
+
+
+                    </div>
+
                   </div>
                   <!-- Page-body end -->
               </div>

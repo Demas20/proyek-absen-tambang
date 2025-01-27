@@ -65,7 +65,7 @@
                       <div class="circle"></div>
                   </div>
               </div>
-            
+
               <div class="spinner-layer spinner-yellow">
                   <div class="circle-clipper left">
                       <div class="circle"></div>
@@ -77,7 +77,7 @@
                       <div class="circle"></div>
                   </div>
               </div>
-            
+
               <div class="spinner-layer spinner-green">
                   <div class="circle-clipper left">
                       <div class="circle"></div>
@@ -98,14 +98,14 @@
       <div class="pcoded-container navbar-wrapper">
         {{-- navbar --}}
         @include('admin.partials.header')
-          
+
 
           <div class="pcoded-main-container">
                 <div class="pcoded-wrapper">
                     @include('admin.partials.sidebar')
                   <div class="pcoded-content">
                     @yield('content')
-                      
+
                     </div>
                 </div>
             </div>
@@ -155,7 +155,7 @@
     </div>
     <![endif]-->
     <!-- Warning Section Ends -->
-    
+
     <!-- Required Jquery -->
     <script type="text/javascript" src="{{asset('assets/js/jquery/jquery.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('assets/js/jquery-ui/jquery-ui.min.js')}} "></script>
@@ -191,10 +191,23 @@
         $(document).ready(function(){
             $('#guru').DataTable();
         });
-        $(document).ready(function(){
-            $('#siswa').DataTable();
+        $(document).ready(function () {
+            $('#siswa').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('operator.ajax') }}",
+                columns: [
+                    { data: 'nama', name: 'nama' },
+                    { data: 'jenis_kelamin', name: 'jenis_kelamin' },
+                    { data: 'status', name: 'status', orderable: false, searchable: false },
+                ],
+                drawCallback: function() {
+                    // Tambahkan logika tambahan jika diperlukan
+                }
+            });
         });
-        
+
+
     </script>
 </body>
 
